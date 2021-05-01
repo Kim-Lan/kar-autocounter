@@ -560,14 +560,14 @@ namespace LiveSplit.UI.Components
 
         private void txt_oldPersonalBest_TextChanged(object sender, EventArgs e)
         {
-            OldPersonalBest_Component = null;
-            SetTextComponents();
+            if (OldPersonalBest_Component == null)
+                SetTextComponents();
         }
 
         private void txt_currentPersonalBest_TextChanged(object sender, EventArgs e)
         {
-            CurrentPersonalBest_Component = null;
-            SetTextComponents();
+            if (CurrentPersonalBest_Component == null)
+                SetTextComponents();
         }
 
         private void button1_Click(object sender, EventArgs e)

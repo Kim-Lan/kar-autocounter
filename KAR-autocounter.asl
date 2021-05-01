@@ -30,19 +30,12 @@ init
 {
     print("Initiating.");
     vars.basePtr = 0;
-    vars.eventSetting = 0;
-    vars.eventSettingPtr = 0x535D6F;
 
     // Update base pointer
     vars.UpdateSettings = (Action) (() => {
         vars.basePtr = memory.ReadValue<uint>(new IntPtr(0x11CDFD8));
-
-        vars.eventSetting = memory.ReadValue<byte>(new IntPtr(vars.basePtr + vars.eventSettingPtr));
-        if (vars.eventSetting == 0x60 || vars.eventSetting == 0xA0) {
-            vars.statsBasePtr = 0x15E6EE0;
-        } else if (vars.eventSetting == 0x40 || vars.eventSetting == 0x80) {
-            vars.statsBasePtr = 0x15E6D80;
-        };
+        vars.statsBasePtr = 0x15A70E0;
+        //vars.statsBasePtr = 0x15E6EE0;
     });
 
     sbyte offense = -2;
