@@ -33,7 +33,7 @@ init
 
     // Update base pointer
     vars.UpdateSettings = (Action) (() => {
-        vars.basePtr = memory.ReadValue<uint>(new IntPtr(0x11CDFD8));
+        vars.basePtr = memory.ReadValue<uint>(new IntPtr(0x11CDFD8)); // Dolphin pointer
         vars.statsBasePtr = 0x15E6EE0; // might need to change
     });
 
@@ -193,7 +193,8 @@ init
 
 start
 {
-    return vars.igt == vars.timeLimit;
+    TimeSpan diff = vars.timeLimit - vars.igt;
+    return diff.Duration() < TimeSpan.FromSeconds(1);
 }
 
 update
