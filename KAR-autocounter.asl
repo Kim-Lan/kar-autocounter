@@ -34,8 +34,9 @@ init
     // Update base pointer
     vars.UpdateSettings = (Action) (() => {
         vars.basePtr = memory.ReadValue<uint>(new IntPtr(0x11CDFD8)); // Dolphin pointer
-        //vars.statsBasePtr = 0x15E6EE0;
-        vars.statsBasePtr = 0x15A70E0; // might need to change
+        vars.statsBasePtr = 0x15A70E0; // playing with 1 cpu
+        // vars.statsBasePtr = 0x15C6FE0; // playing with 2 cpu
+        // vars.statsBasePtr = 0x15E6EE0; // playing with 3 cpu
     });
 
     sbyte offense = -2;
