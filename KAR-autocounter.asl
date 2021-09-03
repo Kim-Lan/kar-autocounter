@@ -192,6 +192,15 @@ init
 		};
 	});
 
+	System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^\s*(\d+)\s*/\s*(\d+)$");
+	vars.ParseAttempts = (Action) (() => {
+		string str = vars.AttemptComponent.Settings.Text2;
+		System.Text.RegularExpressions.Match match = regex.Match(str);
+		vars.finishCount = int.Parse(match.Groups[1].Value);
+		vars.attemptCount = int.Parse(match.Groups[2].Value);
+		print("Attempts: " + vars.finishCount + " finished out of " + vars.attemptCount);
+	});
+
 	foreach (dynamic component in timer.Layout.Components)
 	{
 		string name = component.ComponentName;
@@ -215,15 +224,6 @@ init
 			// print("Attempts: " + vars.finishCount + " finished out of " + vars.attemptCount);
 		}
 	};
-
-	System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^\s*(\d+)\s*/\s*(\d+)$");
-	vars.ParseAttempts = (Action) (() => {
-		string str = vars.AttemptComponent.Settings.Text2;
-		System.Text.RegularExpressions.Match match = regex.Match(str);
-		vars.finishCount = int.Parse(match.Groups[1].Value);
-		vars.attemptCount = int.Parse(match.Groups[2].Value);
-		print("Attempts: " + vars.finishCount + " finished out of " + vars.attemptCount);
-	});
 
 	vars.UpdateCounters = (Action) (() => {
 		foreach (string name in vars.stats.Keys)
