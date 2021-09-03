@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Layout version="1.6.1">
   <Mode>Vertical</Mode>
-  <X>1611</X>
-  <Y>114</Y>
+  <X>1316</X>
+  <Y>170</Y>
   <VerticalWidth>262</VerticalWidth>
   <VerticalHeight>648</VerticalHeight>
   <HorizontalWidth>-1</HorizontalWidth>
@@ -155,7 +155,6 @@
         <GoalColor>FFFCC8FF</GoalColor>
         <OldPersonalBest_Label>All-Time PB</OldPersonalBest_Label>
         <CurrentPersonalBest_Label>Session PB</CurrentPersonalBest_Label>
-        <PersonalBest>0</PersonalBest>
         <ItemList>
           <Item>
             <ItemName>Boost</ItemName>
@@ -224,7 +223,7 @@
       <Path>LiveSplit.ScriptableAutoSplit.dll</Path>
       <Settings>
         <Version>1.5</Version>
-        <ScriptPath>C:\Users\klanv\Desktop\Kirby Air Ride\KAR-autocounter-0.2.2.asl</ScriptPath>
+        <ScriptPath>KAR-autocounter-0.2.asl</ScriptPath>
         <Start>True</Start>
         <Reset>True</Reset>
         <Split>False</Split>
