@@ -21,12 +21,8 @@ namespace LiveSplit.UI.Components
 
         public List<Image> ImagesToDispose { get; set; }
 
-        public int OldPersonalBest { get; set; }
-        public int CurrentPersonalBest { get; set; }
         public string OldPersonalBest_Label { get; set; }
         public string CurrentPersonalBest_Label { get; set; }
-        public TextComponent OldPersonalBest_Component { get; set; }
-        public TextComponent CurrentPersonalBest_Component { get; set; }
 
         public int Total { get { return ItemList[ItemList.Count - 1].Count; } }
 
@@ -82,9 +78,6 @@ namespace LiveSplit.UI.Components
             CountFont = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
             GoalFont = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
 
-            OldPersonalBest = 0;
-            CurrentPersonalBest = 0;
-
             txt_oldPersonalBest.DataBindings.Add("Text", this, "OldPersonalBest_Label", false, DataSourceUpdateMode.OnPropertyChanged);
             txt_currentPersonalBest.DataBindings.Add("Text", this, "CurrentPersonalBest_Label", false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -103,9 +96,6 @@ namespace LiveSplit.UI.Components
             chk_font.CheckedChanged += chk_font_CheckedChanged;
 
             Load += AutoCounterSettings_Load;
-
-            Model.Input.EventHandlerT<TimerPhase> ResetEventHandler = (s, e) => { UpdatePersonalBest(); };
-            state.OnReset += ResetEventHandler;
         }
 
         private void AutoCounterSettings_Load(object sender, EventArgs e)
@@ -113,19 +103,6 @@ namespace LiveSplit.UI.Components
             chk_displayIcons_CheckedChanged(null, null);
             chk_showGoal_CheckedChanged(null, null);
             chk_font_CheckedChanged(null, null);
-            SetTextComponents();
-        }
-
-        private void SetTextComponents()
-        {
-            foreach (dynamic component in CurrentState.Layout.Components)
-            {
-                string name = component.ComponentName;
-                if (!String.IsNullOrWhiteSpace(OldPersonalBest_Label) && name.StartsWith(OldPersonalBest_Label))
-                    OldPersonalBest_Component = (TextComponent)component;
-                else if (!String.IsNullOrWhiteSpace(CurrentPersonalBest_Label) && name.StartsWith(CurrentPersonalBest_Label))
-                    CurrentPersonalBest_Component = (TextComponent)component;
-            }
         }
 
         public void SetCount(string name, int count)
@@ -135,26 +112,6 @@ namespace LiveSplit.UI.Components
                 if (item.Name == name)
                     item.SetCount(count);
             }
-        }
-
-        public void UpdatePersonalBest()
-        {
-            if (Total > CurrentPersonalBest)
-                CurrentPersonalBest = Total;
-            if (CurrentPersonalBest > OldPersonalBest)
-                OldPersonalBest = CurrentPersonalBest;
-            if (OldPersonalBest_Component != null)
-                OldPersonalBest_Component.Settings.Text2 = OldPersonalBest.ToString();
-            if (CurrentPersonalBest_Component != null)
-                CurrentPersonalBest_Component.Settings.Text2 = CurrentPersonalBest.ToString();
-        }
-
-        public void ResetCurrentPersonalBest()
-        {
-            CurrentPersonalBest = 0;
-
-            if (CurrentPersonalBest_Component != null)
-                CurrentPersonalBest_Component.Settings.Text2 = "0";
         }
 
         private void RaiseSettingsChanged()
@@ -372,7 +329,6 @@ namespace LiveSplit.UI.Components
             IconSize = SettingsHelper.ParseFloat(element["IconSize"], 24f);
             OldPersonalBest_Label = SettingsHelper.ParseString(element["OldPersonalBest_Label"]);
             CurrentPersonalBest_Label = SettingsHelper.ParseString(element["CurrentPersonalBest_Label"]);
-            OldPersonalBest = SettingsHelper.ParseInt(element["PersonalBest"]);
 
             var itemsElement = element["ItemList"];
             ItemList.Clear();
@@ -408,8 +364,6 @@ namespace LiveSplit.UI.Components
                 SettingsHelper.CreateSetting(document, parent, "GoalColor", GoalColor) ^
                 SettingsHelper.CreateSetting(document, parent, "OldPersonalBest_Label", OldPersonalBest_Label) ^
                 SettingsHelper.CreateSetting(document, parent, "CurrentPersonalBest_Label", CurrentPersonalBest_Label);
-
-            hashCode ^= SettingsHelper.CreateSetting(document, parent, "PersonalBest", OldPersonalBest);
 
             XmlElement itemsElement = null;
             if (document != null)
@@ -560,26 +514,38 @@ namespace LiveSplit.UI.Components
 
         private void txt_oldPersonalBest_TextChanged(object sender, EventArgs e)
         {
-            if (OldPersonalBest_Component == null)
-                SetTextComponents();
+            RaiseSettingsChanged();
         }
 
         private void txt_currentPersonalBest_TextChanged(object sender, EventArgs e)
         {
-            if (CurrentPersonalBest_Component == null)
-                SetTextComponents();
+            RaiseSettingsChanged();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            OldPersonalBest = 0;
-            if (OldPersonalBest_Component != null)
-                OldPersonalBest_Component.Settings.Text2 = "0";
+            foreach (dynamic component in CurrentState.Layout.Components)
+            {
+                string name = component.ComponentName;
+                if (!String.IsNullOrWhiteSpace(OldPersonalBest_Label) && name.Contains(OldPersonalBest_Label))
+                {
+                    component.Settings.Text2 = "0";
+                    break;
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ResetCurrentPersonalBest();
+            foreach (dynamic component in CurrentState.Layout.Components)
+            {
+                string name = component.ComponentName;
+                if (!String.IsNullOrWhiteSpace(CurrentPersonalBest_Label) && name.Contains(CurrentPersonalBest_Label))
+                {
+                    component.Settings.Text2 = "0";
+                    break;
+                }
+            }
         }
 
         private void chk_displayIcons_CheckStateChanged(object sender, EventArgs e)
